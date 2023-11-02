@@ -18,8 +18,8 @@ public class FeedEntry implements BaseColumns {
             "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
                     FeedEntry._ID + " INTEGER," +
                     FeedEntry.COLUMN_NAME_EMAIL + " TEXT PRIMARY KEY," +
-                    FeedEntry.COLUMN_NAME_PASSWORD + " TEXT," +
-                    FeedEntry.COLUMN_NAME_NAME + " TEXT)";
+                    FeedEntry.COLUMN_NAME_PASSWORD + "TEXT," +
+                    FeedEntry.COLUMN_NAME_NAME + " TEXT )";
 
 
     public static class DBHelpers extends SQLiteOpenHelper {

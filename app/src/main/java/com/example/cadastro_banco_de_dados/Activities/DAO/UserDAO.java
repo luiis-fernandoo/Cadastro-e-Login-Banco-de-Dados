@@ -1,10 +1,13 @@
 package com.example.cadastro_banco_de_dados.Activities.DAO;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.example.cadastro_banco_de_dados.Activities.Helpers.FeedEntry;
 import com.example.cadastro_banco_de_dados.Activities.Models.User;
@@ -16,6 +19,7 @@ public class UserDAO {
 
     private final User user;
     private FeedEntry.DBHelpers db;
+    private static final String TAG = "HomeLog";
 
     public UserDAO(Context ctx, User user) {
         this.user = user;
@@ -23,6 +27,7 @@ public class UserDAO {
     }
 
     public void cadastroUser(){
+
 
         SQLiteDatabase dbLite = this.db.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -55,6 +60,7 @@ public class UserDAO {
                 null,                   // don't filter by row groups
                 null
         );
+        Log.d(TAG, "Número de linhas no cursor: " + cursor.getCount()); // Adicione este log
 
         if (cursor.getCount() == 1){
             return true;
@@ -92,5 +98,53 @@ public class UserDAO {
             nameUser.add(name);
         }
         return nameUser;
+    }
+
+    public User obterUsuarioPorEmail(){
+
+        SQLiteDatabase dbLite = this.db.getReadableDatabase();
+
+        String sql = "Select * From user Where email = ?;";
+
+        Cursor cursor = dbLite.rawQuery(sql, new String[]{this.user.getEmail()});
+
+        Log.d(TAG, "Número de linhas no cursor: " + cursor.getCount());
+
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.moveToFirst();
+        }else{
+            Log.d(TAG, "Cursor vazio ou nulo!"); // Adicione este log
+        }
+
+        this.user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
+        this.user.setPassword(cursor.getString(cursor.getColumnIndexOrThrow("password")));
+        this.user.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+
+        return this.user;
+    }
+
+    public boolean update(){
+        SQLiteDatabase dbLite = this.db.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("name",this.user.getName());
+        cv.put("password", this.user.getPassword());
+        cv.put("email", this.user.getEmail());
+
+        long ret = dbLite.update("user", cv,"email = ?", new String[]{this.user.getEmail()} );
+        if (ret > 0){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean delete(){
+
+            SQLiteDatabase dbLite = this.db.getWritableDatabase();
+            long ret = dbLite.delete("user","email = ?", new String[]{this.user.getEmail()} );
+
+            if (ret > 0){
+                return true;
+            }
+            return false;
     }
 }

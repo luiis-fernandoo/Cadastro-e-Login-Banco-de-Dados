@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cadastro_banco_de_dados.Activities.DAO.UserDAO;
@@ -20,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText editLoginEmail;
     EditText editLoginPassword;
     Button buttonLogin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

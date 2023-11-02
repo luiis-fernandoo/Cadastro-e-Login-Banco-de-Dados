@@ -28,29 +28,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        buttonCadastro = findViewById(R.id.buttonCadastro);
-        editCadastroName = findViewById(R.id.editCadastroName);
-        editCadastroEmail = findViewById(R.id.editCadastroEmail);
-        editCadastroPassword = findViewById(R.id.editCadastroPassword);
+        buttonCadastro = findViewById(R.id.buttonEditar);
+        editCadastroName = findViewById(R.id.editEditarName);
+        editCadastroEmail = findViewById(R.id.editEditarEmail);
+        editCadastroPassword = findViewById(R.id.editEditarPassword);
         textViewLogin = findViewById(R.id.textViewLogin);
 
+        SharedPreferences sp = getSharedPreferences("appCadastro",
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editar = sp.edit();
+        editar.putString("email", null);
+        editar.commit();
 
         buttonCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sp = getSharedPreferences("appCadastro",
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editar = sp.edit();
-                editar.putString("email", editCadastroEmail.getText().toString());
-                editar.commit();
+
 
                 UserDAO userDao = new UserDAO(getApplicationContext(),
                         new User(editCadastroEmail.getText().toString(), editCadastroName.getText().toString(),
                                 editCadastroPassword.getText().toString()));
-                userDao.cadastroUser();
+                if(editCadastroEmail.getText().toString().isEmpty()){
+                    editCadastroEmail.setError("Campo de email obrigatório");
+                } else if (editCadastroName.getText().toString().isEmpty()) {
+                    editCadastroName.setError("campo de nome obrigatório");
+                }else if(editCadastroPassword.getText().toString().isEmpty()){
+                    editCadastroPassword.setError("Campo de senha obrigatório");
+                }else{
+                    userDao.cadastroUser();
 
-                Intent it = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(it);
+                    Intent it = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(it);
+                }
+
             }
         });
 
